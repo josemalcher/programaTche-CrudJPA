@@ -103,6 +103,20 @@ target/
 
 # End of https://www.gitignore.io/api/java,eclipse,java-web
 
+
+# Created by https://www.gitignore.io/api/netbeans
+
+### NetBeans ###
+programaTche-CrudJPA/nbproject/private/
+programaTche-CrudJPA/build/
+programaTche-CrudJPA/nbbuild/
+programaTche-CrudJPA/dist/
+programaTche-CrudJPA/nbdist/
+programaTche-CrudJPA/.nb-gradle/
+
+
+# End of https://www.gitignore.io/api/netbeans
+
 programaTcheCrudJPA/
 programaTcheCrudJPA/Arquivo_de_Apoio
 

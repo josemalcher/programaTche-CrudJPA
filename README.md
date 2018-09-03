@@ -20,6 +20,30 @@ https://www.youtube.com/playlist?list=PLuK0q1zy2dBy8CxFP0OLiF31xmjnaVupj
 
 ## <a name="parte1">Aula 01 - requisitos e configurações do projeto</a>
 
+- NetBeans
+- https://jdbc.postgresql.org/download.html
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="programaTche-CrudJPAPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>model.Professor</class>
+    <class>model.Disciplina</class>
+    <class>model.Aluno</class>
+    <class>model.Curso</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ProgramaTche_JSPJPA"/>
+      <property name="javax.persistence.jdbc.user" value="postgres"/>
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="mal369"/>
+    </properties>
+  </persistence-unit>
+</persistence>
+
+```
+
 
 [Voltar ao Índice](#indice)
 
