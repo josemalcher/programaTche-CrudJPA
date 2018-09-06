@@ -52,6 +52,109 @@ https://www.youtube.com/playlist?list=PLuK0q1zy2dBy8CxFP0OLiF31xmjnaVupj
 ## <a name="parte2">Aula 02 - Criação das classes de modelo / DAO e incorporação do JSP básico</a>
 
 
+- \programaTche-CrudJPA\src\java\dao\ProfessorDAO.java
+  
+```java
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package dao;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import model.Professor;
+
+/**
+ *
+ * @author josemalcher
+ */
+public class ProfessorDAO{
+    EntityManager em;
+    
+    public ProfessorDAO() throws Exception {
+        EntityManagerFactory emf;
+        emf = Conexao.getConexao();
+        em = emf.createEntityManager();
+    }
+    
+    public void incluir(Professor obj) throws Exception {
+        try {
+            em.getTransaction().begin();
+            em.persist(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+            
+        }
+        
+    }
+
+    public List<Professor> listar() throws Exception {
+        return em.createNamedQuery("Professor.findAll").getResultList();
+    }
+    
+    public void alterar(Professor obj) throws Exception {
+        
+        try {
+            em.getTransaction().begin();
+            em.merge(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public void excluir(Professor obj) throws Exception {
+        
+        try {
+            em.getTransaction().begin();
+            em.remove(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void fechaEmf() {
+        Conexao.closeConexao();
+    }
+}
+
+```
+
+- programaTche-CrudJPA\web\professores-cadastrar-ok.jsp
+
+```html
+<%@include file="cabecalho.jsp"%>
+<%
+    String siape = request.getParameter("txtSiape");
+    String nome = request.getParameter("txtNome");
+    // chamar a inclusão da DAO
+%>
+
+         <h1 class="centro">Cadastro de Professores</h1>
+            
+         <div>
+             Registro cadastrado com sucesso.<br />
+             <a href="professores.jsp">Voltar para Listagem</a>
+             
+         </div>
+    </body>
+</html>
+
+```
+
 [Voltar ao Índice](#indice)
 
 ---

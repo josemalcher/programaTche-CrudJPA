@@ -1,6 +1,7 @@
 <%@include file="cabecalho.jsp"%>
 <%
-
+    String siape = request.getParameter("siape");
+    
 %>
          <h1 class="centro">Exclusão de Professores</h1>
             
