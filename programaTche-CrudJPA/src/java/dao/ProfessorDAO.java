@@ -68,6 +68,10 @@ public class ProfessorDAO{
             em.close();
         }
     }
+    
+    public Professor buscaPorChavePrimaria(String chave){
+        return em.find(Professor.class, chave);
+    }
 
     public void fechaEmf() {
         Conexao.closeConexao();
