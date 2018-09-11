@@ -26,7 +26,7 @@ List<Professor> lista = dao.listar();
                         <tr>
                             <td><%=item.getSiape()%></td>
                             <td><%=item.getNome()%></td>
-                            <td><a href="professores-editar.jsp?siape=<%=item.getSiape()%>">Editar</a>
+                            <td><a href="professores-atualizar.jsp?siape=<%=item.getSiape()%>">Editar</a>
                                 <a href="professores-excluir-ok.jsp?siape=<%=item.getSiape()%>">Excluir</a>
                             </td>
                         </tr>
