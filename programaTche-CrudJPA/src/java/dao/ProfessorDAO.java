@@ -8,6 +8,7 @@ package dao;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import model.Professor;
 
 /**
@@ -40,6 +41,16 @@ public class ProfessorDAO{
 
     public List<Professor> listar() throws Exception {
         return em.createNamedQuery("Professor.findAll").getResultList();
+    }
+    
+    public List<Professor> listar(String nome) throws Exception {
+        // Passa o parametro para query
+        TypedQuery<Professor> query = em.createNamedQuery("Professor.findByName", Professor.class);
+        //seta o parametro
+        //query.setParameter("nome", nome);
+        query.setParameter("nome",'%'+ nome+ '%');
+        // retorna a lista
+        return query.getResultList();
     }
     
     public void alterar(Professor obj) throws Exception {

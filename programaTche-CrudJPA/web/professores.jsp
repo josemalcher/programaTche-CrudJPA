@@ -4,7 +4,18 @@
 <%@include file="cabecalho.jsp"%>
 <%
 ProfessorDAO dao = new ProfessorDAO();
-List<Professor> lista = dao.listar();
+List<Professor> lista;
+
+//Verificar se veio algo do filtro;
+// se vier eu filtro por nome;
+// caso contrário eu trago todos os professores
+if(request.getParameter("txtFiltro") != null && request.getParameter("txtFiltro") != ""){
+    String txtFiltro = request.getParameter("txtFiltro");
+    lista = dao.listar(txtFiltro);
+}else{
+    lista = dao.listar();
+}
+
 
 %>
         <div>
@@ -12,14 +23,14 @@ List<Professor> lista = dao.listar();
             
             <div>
                 +<a href="professores-cadastrar.jsp">Novo Professor</a><br />
-                <form>
-                    <input type="text" />
+                <form action="professores.jsp" method="post">
+                    <input type="text" name="txtFiltro" />
                     <input type="submit" value="Pesquisar"/><br />
+                </form>
                     <table>
                         <tr>
                             <th>Siape</th>
                             <th>Nome</th>
-                            
                             <th>Ações</th>
                         </tr>
                         <%for(Professor item:lista){%>
@@ -31,33 +42,7 @@ List<Professor> lista = dao.listar();
                             </td>
                         </tr>
                         <%}%>
-<!--                        <tr>
-                            <td>999</td>
-                            <td>Marcelo</td>
-                            <td><a href="professres-editar.jsp">Editar</a>
-                                <a href="professores-excluir-ok.jsp?siape=999">Excluir</a>
-                            </td>
-                            
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>xxxxxx</td>
-                            <td><a href="professres-editar.jsp">Editar</a>
-                                <a href="professores-excluir.jsp">Excluir</a>
-                            </td>
-                            
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>xxxxxx</td>
-                            <td><a href="professres-editar.jsp">Editar</a>
-                                <a href="professores-excluir.jsp">Excluir</a>
-                            </td>
-                            
-                        </tr>-->
                     </table>
-                    
-                </form>
             </div>
         </div>
     </body>
