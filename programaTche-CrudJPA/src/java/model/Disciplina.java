@@ -73,20 +73,20 @@ public class Disciplina implements Serializable {
         this.semestre = semestre;
     }
 
-    public Curso getCodigocurso() {
+    public Curso getCurso() {
         return codigocurso;
     }
 
-    public void setCodigocurso(Curso codigocurso) {
-        this.codigocurso = codigocurso;
+    public void setCurso(Curso curso) {
+        this.codigocurso = curso;
     }
 
-    public Professor getSiapeprofessor() {
+    public Professor getProfessor() {
         return siapeprofessor;
     }
 
-    public void setSiapeprofessor(Professor siapeprofessor) {
-        this.siapeprofessor = siapeprofessor;
+    public void setProfessor(Professor professor) {
+        this.siapeprofessor = professor;
     }
 
     @Override

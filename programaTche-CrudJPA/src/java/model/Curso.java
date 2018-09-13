@@ -92,7 +92,7 @@ public class Curso implements Serializable {
 
     @Override
     public String toString() {
-        return "model.Curso[ codigo=" + codigo + " ]";
+        return codigo + "/" + nome;
     }
     
 }

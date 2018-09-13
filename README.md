@@ -504,6 +504,324 @@ if(request.getParameter("txtFiltro") != null && request.getParameter("txtFiltro"
 
 ## <a name="parte7">Relacionamento 1 pra N - Aula 1</a>
 
+```java
+package dao;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import model.Disciplina;
+
+/**
+ *
+ * @author josemalcher
+ */
+public class DisciplinaDAO {
+    EntityManager em;
+    
+    public DisciplinaDAO() throws Exception {
+        EntityManagerFactory emf;
+        emf = Conexao.getConexao();
+        em = emf.createEntityManager();
+    }
+    
+    public void incluir(Disciplina obj) throws Exception {
+        try {
+            em.getTransaction().begin();
+            em.persist(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+            
+        }
+        
+    }
+
+    public List<Disciplina> listar() throws Exception {
+        return em.createNamedQuery("Disciplina.findAll").getResultList();
+    }
+    
+    public void alterar(Disciplina obj) throws Exception {
+        
+        try {
+            em.getTransaction().begin();
+            em.merge(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public void excluir(Disciplina obj) throws Exception {
+        
+        try {
+            em.getTransaction().begin();
+            em.remove(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void fechaEmf() {
+        Conexao.closeConexao();
+    }
+        
+            
+}
+
+```
+
+```java
+package dao;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import model.Curso;
+
+/**
+ *
+ * @author josemalcher
+ */
+public class CursoDAO {
+    EntityManager em;
+    
+    public CursoDAO() throws Exception {
+        EntityManagerFactory emf;
+        emf = Conexao.getConexao();
+        em = emf.createEntityManager();
+    }
+    
+    public void incluir(Curso obj) throws Exception {
+        try {
+            em.getTransaction().begin();
+            em.persist(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+            
+        }
+        
+    }
+
+    public List<Curso> listar() throws Exception {
+        return em.createNamedQuery("Curso.findAll").getResultList();
+    }
+    
+    public void alterar(Curso obj) throws Exception {
+        
+        try {
+            em.getTransaction().begin();
+            em.merge(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public void excluir(Curso obj) throws Exception {
+        
+        try {
+            em.getTransaction().begin();
+            em.remove(obj);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void fechaEmf() {
+        Conexao.closeConexao();
+    }
+}
+
+```
+
+```jsp
+<%@page import="java.util.List"%>
+<%@page import="model.Disciplina"%>
+<%@page import="dao.DisciplinaDAO"%>
+<%@include file="cabecalho.jsp"%>
+<%
+DisciplinaDAO dao = new DisciplinaDAO();
+List<Disciplina> lista = dao.listar();
+
+%>
+
+
+        <div>
+            <h1 class="centro">Disciplina</h1>
+            
+            <div>
+                +<a href="disciplina-cadastrar.jsp">Nova Disciplina</a><br />
+                <form>
+                    <input type="text" />
+                    <input type="submit" value="Pesquisar"/><br />
+                    <table>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Curso</th>
+                            <th>Semestre</th>
+                            <th>Professor</th>
+                            <th>Ações</th>
+                        </tr>
+                        <%
+                        for(Disciplina obj : lista){
+                        %>
+                        <tr>
+                            <td><%=obj.getCodigo()%></td>
+                            <td><%=obj.getNome()%></td>
+                            <td><%=obj.getCurso()%></td>
+                            <td><%=obj.getSemestre()%></td>
+                            <td><a href="curso-atualizar.jsp?codigo=<%=obj.getCodigo()%>">Editar</a>
+                                <a href="curso-excluir-ok.jsp?codigo=<%=obj.getCodigo()%>">Excluir</a>
+                            </td>
+                            
+                        </tr>
+                        <%
+                        }
+                        %>
+                        
+                    </table>
+                    
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+
+```
+
+```jsp
+<%@page import="model.Professor"%>
+<%@page import="dao.ProfessorDAO"%>
+<%@page import="model.Curso"%>
+<%@page import="java.util.List"%>
+<%@page import="dao.CursoDAO"%>
+<%@include file="cabecalho.jsp"%>
+<%
+//Listagem de cursos
+    CursoDAO cDAO = new CursoDAO();
+    List<Curso> cLista = cDAO.listar();
+
+// Listagem de professores
+    ProfessorDAO pDAO = new ProfessorDAO();
+    List<Professor> pLista = pDAO.listar();
+
+%>
+
+
+<div>
+    <h1 class="centro">Cadastro de Disciplinas</h1>
+
+    <div>
+
+        <form action="disciplina-cadastrar-ok.jsp" method="post">
+            <label>Código</label>
+            <input type="text" name="txtcodigo" /><br />
+            <label>Nome:</label>
+            <input type="text" name="txtnome" /><br />
+            <label>Semestre</label>
+            <input type="text" name="txtsemestre" /><br />
+            <label>Curso</label>
+            <!--            <input type="text" name="txtcurso" /><br />-->
+            <select name="selcurso">
+                <option value="">Selecione</option>
+                <%                    // percorrer a lista
+                    for (Curso c : cLista) {
+                %>
+                <option value="<%=c.getCodigo()%>"><%=c%></option>
+                <%}%>
+            </select><br>
+            <label>professor</label>
+            <!--            <input type="text" name="txtprofessor" /><br />-->
+            <select name="selprofessor">
+                <option value="" >Selecione</option>
+                <%
+                    // percorrer a lista
+                    for (Professor p : pLista) {
+                %>
+                <option value="<%=p.getSiape()%>"><%=p%></option>
+                <%}%>
+            </select>
+            <br>
+            <input type="reset" value="Limpar" />
+            <input type="submit" value="Cadastrar" />
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+
+```
+
+```jsp
+<%@page import="model.Curso"%>
+<%@page import="model.Professor"%>
+<%@page import="model.Disciplina"%>
+<%@page import="dao.DisciplinaDAO"%>
+<%@include file="cabecalho.jsp"%>
+<%
+//txtnome é o NAME que eu coloquei no input na tela 
+//anterior
+String codigo = request.getParameter("txtcodigo");
+String nome = request.getParameter("txtnome");
+String codigocurso = request.getParameter("selcurso");//chave
+String semestre = request.getParameter("txtsemestre");
+String siapeprofessor = request.getParameter("selprofessor"); //chave
+
+DisciplinaDAO dao = new DisciplinaDAO();
+Disciplina obj = new Disciplina();
+
+// Monta as FK
+Professor objProf = new Professor();
+objProf.setSiape(siapeprofessor);
+
+Curso objCurso = new Curso();
+objCurso.setCodigo(Integer.parseInt(codigocurso));
+
+//populando o obj disciplina
+obj.setCodigo(Integer.parseInt(codigo));
+obj.setCurso(objCurso);
+obj.setNome(nome);
+obj.setProfessor(objProf);
+obj.setSemestre(Integer.parseInt(semestre));
+
+dao.incluir(obj);
+
+
+
+%>
+         <h1 class="centro">Cadastro de Curso</h1>
+            
+         <div>
+             Registro cadastrado com sucesso.<br />
+             <a href="disciplinas.jsp">Voltar para Listagem</a>
+         </div>
+    </body>
+</html>
+
+```
+
 
 [Voltar ao Índice](#indice)
 
