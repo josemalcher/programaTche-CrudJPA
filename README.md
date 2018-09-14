@@ -15,6 +15,7 @@ https://www.youtube.com/playlist?list=PLuK0q1zy2dBy8CxFP0OLiF31xmjnaVupj
 - [Relacionamento 1 pra N - Aula 1](#parte7)   
 - [Relacionamento 1 pra N - Aula 2](#parte8)   
 - [N pra N - Parte 1](#parte9)   
+- [RESUMO](#parte10)   
 
 ---
 
@@ -1024,8 +1025,240 @@ dao.alterar(obj);
 
 ## <a name="parte9">N pra N - Parte 1</a>
 
+- obs: Material inicial do projeto não encontrado! (Pesquisar depois!)
 
 [Voltar ao Índice](#indice)
 
 ---
 
+
+## <a name="parte10">RESUMO</a>
+
+### Resumão  - Criando um CRUD com Java/JPA – Integrando o HTML
+
+#### Incluir
+
+1o Passo:
+
+Montar o formulário com os dados que devem ser preenchidos pelo usuário, não esquecendo de identifica-los através do atributo name.
+
+Exemplo (professores-cadastrar.jsp):
+```html
+<form action="professores-cadastrar-ok.jsp" method="post">
+    <label>Nome:</label><input type="text" name="txtNome"/><br />
+    <label>Siape</label><input type="text" name="txtSiape" /><br />
+    
+    <input type="reset" value="Limpar" />
+    <input type="submit" value="Cadastrar" />
+ </form>
+```
+
+2o Passo:
+
+Receber as informações enviadas via POST e gravar no banco de dados.
+
+Exemplo (professores-cadastrar-ok.jsp):
+VERSÃO BÁSICA
+
+```jsp
+<%
+    //BUSCAR AS INFORMAÇÕES DO FORMULÁRIO
+    String nome = request.getParameter("txtNome");
+    String siape = request.getParameter("txtSiape");
+    
+    //Criar meu objeto modelo
+    Professor prof = new Professor();
+    //Adiciono os valores enviados
+    prof.setNome(nome);
+    prof.setSiape(siape);
+    
+    //Instanciar minha classe de acesso a dados
+    ProfessorDAO dao = new ProfessorDAO();
+    //manda inserir
+    
+    dao.incluir(prof);
+    
+%>
+
+```
+
+VERSÃO COM VALIDAÇÕES
+
+```jsp
+<%
+    //VERIFICA SE AS INFORMAÇÕES VIERAM DO FORMULÁRIO
+    //SE NÃO VIERAM VOLTO PRA PÁGINA DE LISTAGEM
+    if(request.getParameter("txtNome") == null || request.getParameter("txtSiape") == null)
+    {
+        //RETORNA PARA A LISTAGEM através do método sendRedirect
+        response.sendRedirect("professores.jsp");
+    }
+    //BUSCAR AS INFORMAÇÕES DO FORMULÁRIO
+    String nome = request.getParameter("txtNome");
+    String siape = request.getParameter("txtSiape");
+    
+    //Criar meu objeto modelo
+    Professor prof = new Professor();
+    //Adiciono os valores enviados
+    prof.setNome(nome);
+    prof.setSiape(siape);
+    
+    //Instanciar minha classe de acesso a dados
+    ProfessorDAO dao = new ProfessorDAO();
+    
+    //TENTA inserir, se der erro vai gerar uma exceção
+    //nesse caso trataremos a mensagem que será exibida para o usuário
+    //através de uma variável mensagem
+    String mensagem;
+    try
+    {
+        dao.incluir(prof);
+        mensagem = "Registro cadastrado com sucesso";
+    }
+    catch(Exception e)
+    {
+        mensagem = "Não foi possível realizar a operação";
+    }
+    //Aí é escolher no html onde exibir a variável mensagem
+    
+%>
+
+```
+
+#### Listar
+
+1o Passo
+
+buscar os registros através do método listar elo
+
+```jsp
+<%
+//Buscar os professores cadastrado
+//Primeiro instancia a classe DAO
+ProfessorDAO dao = new ProfessorDAO();
+//chama o método que retorna todos os registros
+List<Professor> lista = dao.listar();
+//Abaixo iremos percorrer a lista para montar dinâmicamente a tabela %>
+
+```
+
+2o Passo
+
+Popular o html com os registros retornados, nesse caso vamos popular uma tabela.
+
+Tabela só com HTML
+
+```jsp
+<table>
+    <tr>
+        <th>Siape</th>
+        <th>Nome</th>
+        <th>Ações</th>
+    </tr>
+    <tr>
+        <td>123</td>
+        <td>Alex</td>
+        <td><a href="professores-editar.jsp?siape=123">Editar</a>
+            <a href="professores-excluir-ok.jsp?siape=123">Excluir</a>
+        </td>
+    </tr>
+ </table>
+
+```
+
+Agora a integração com os registros retornados na listagem:
+
+```jsp
+<table>
+    <tr>
+        <th>Siape</th>
+        <th>Nome</th>
+        <th>Ações</th>
+    </tr>
+    <%
+    //percorre os registros buscados na base de dados
+    for(Professor item:lista)
+    {
+    
+    %>
+    <tr>
+        <td><%=item.getSiape()%></td>
+        <td><%=item.getNome()%></td>
+        <td>
+            <a href="professores-editar.jsp?siape=<%=item.getSiape()%>">Editar</a>
+            <a href="professores-excluir-ok.jsp?siape=<%=item.getSiape()%>">Excluir</a>
+        </td>
+    </tr>
+    <%
+    }
+    %>
+</table>
+
+```
+
+####Excluir
+
+1o Passo
+
+Na classe DAO criaremos um método que deverá buscar o registro a partir da chave primária, no caso do exemplo a chave primária é o siape
+
+```java
+public Professor buscaPorChavePrimaria(String chave){
+    return em.find(Professor.class, chave);
+}
+```
+
+2o Passo
+
+No arquivo que irá executar a exclusão colocaremos a seguinte codificação.
+
+Exemplo(professores-excluir-ok.jsp)
+
+
+```jsp
+<%@page import="dao.ProfessorDAO"%>
+<%@page import="model.Professor"%>
+<%@include file="cabecalho.jsp"%>
+<%
+// Exclusão é pela chave primaria, no caso é o SIAPE
+//Primeri verifica se veio o siape no param
+    if (request.getParameter("siape") == null) {
+        response.sendRedirect("professores.jsp");
+    }
+    String siape = request.getParameter("siape");
+    String msg = "";
+    try{
+        //Primeiramente vamos buscar o Professor que desejamos exluir
+        ProfessorDAO dao = new ProfessorDAO();
+        Professor prof = dao.buscaPorSiape(chave);
+        //Professor obj = dao.buscaPorChavePrimaria(siape);
+        
+        // Se retornou o objeto realiza a exclusão, caso contrário
+        // diz para o usuário que o professor não foi encontrado
+        if(obj != null){
+            dao.excluir(obj);
+            msg = "Registro exluído com sucesso";
+        }else{
+            msg = "Registro não encontrado";
+        }
+        
+    }catch(Exception e){
+        msg = "Não foi possível excluir o registro";
+    }
+    
+
+%>
+<h1 class="centro">Exclusão de Professores</h1>
+
+<div>
+    <%=msg%><br />
+    <a href="professores.jsp">Voltar para Listagem</a>
+</div>
+</body>
+</html>
+
+```
+
+[Voltar ao Índice](#indice)
+
+---
