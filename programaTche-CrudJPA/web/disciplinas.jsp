@@ -34,8 +34,8 @@ List<Disciplina> lista = dao.listar();
                             <td><%=obj.getNome()%></td>
                             <td><%=obj.getCurso()%></td>
                             <td><%=obj.getSemestre()%></td>
-                            <td><a href="curso-atualizar.jsp?codigo=<%=obj.getCodigo()%>">Editar</a>
-                                <a href="curso-excluir-ok.jsp?codigo=<%=obj.getCodigo()%>">Excluir</a>
+                            <td><a href="disciplina-atualizar.jsp?codigo=<%=obj.getCodigo()%>">Editar</a>
+                                <a href="disciplina-excluir-ok.jsp?codigo=<%=obj.getCodigo()%>">Excluir</a>
                             </td>
                             
                         </tr>

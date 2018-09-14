@@ -830,6 +830,193 @@ dao.incluir(obj);
 ## <a name="parte8">Relacionamento 1 pra N - Aula 2</a>
 
 
+```jsp
+<%@page import="model.Professor"%>
+<%@page import="java.util.List"%>
+<%@page import="model.Curso"%>
+<%@page import="dao.CursoDAO"%>
+<%@page import="dao.ProfessorDAO"%>
+<%@page import="model.Disciplina"%>
+<%@page import="dao.DisciplinaDAO"%>
+<%@include file="cabecalho.jsp"%>
+<%
+    // receber achave primaria
+    // buscar o reguistro correspondente a C.p.
+    // excluir o registro
+    if(request.getParameter("codigo")== null){
+        response.sendRedirect("disciplinas.jsp");
+        return;
+    }
+    Integer codigo = Integer.parseInt(request.getParameter("codigo"));
+    DisciplinaDAO dao = new DisciplinaDAO();
+    Disciplina obj  = dao.buscaPorChavePrimaria(codigo);
+
+    // Achou a disciplina, se não volta para lista
+    if(obj == null){
+        response.sendRedirect("disciplinas.jsp");
+        return;
+    }
+    
+//Listagem de cursos
+    CursoDAO cDAO = new CursoDAO();
+    List<Curso> cLista = cDAO.listar();
+
+    // Listagem de professores
+    ProfessorDAO pDAO = new ProfessorDAO();
+    List<Professor> pLista = pDAO.listar();
+
+%>
+         <h1 class="centro">Exclusão de Alunos</h1>
+            
+         <div>
+             <%=msg%><br />
+             <a href="disciplinas.jsp">Voltar para Listagem</a>
+         </div>
+    </body>
+</html>
+
+```
+
+```jsp
+<%@page import="model.Disciplina"%>
+<%@page import="dao.DisciplinaDAO"%>
+<%@page import="model.Professor"%>
+<%@page import="dao.ProfessorDAO"%>
+<%@page import="model.Curso"%>
+<%@page import="java.util.List"%>
+<%@page import="dao.CursoDAO"%>
+<%@include file="cabecalho.jsp"%>
+<%
+    
+    if(request.getParameter("codigo")== null){
+        response.sendRedirect("disciplina.jsp");
+        return;
+    }
+    
+    Integer codigo = Integer.parseInt(request.getParameter("codigo"));
+    DisciplinaDAO dao = new DisciplinaDAO();
+    Disciplina obj = dao.buscaPorChavePrimaria(codigo);
+    String msg = "";
+    
+//Listagem de cursos
+    CursoDAO cDAO = new CursoDAO();
+    List<Curso> cLista = cDAO.listar();
+
+// Listagem de professores
+    ProfessorDAO pDAO = new ProfessorDAO();
+    List<Professor> pLista = pDAO.listar();
+
+%>
+
+
+<div>
+    <h1 class="centro">Atualização de Disciplinas</h1>
+
+    <div>
+
+        <form action="disciplina-atualizar-ok.jsp" method="post">
+            <label>Código</label>
+            <input type="text" name="txtcodigo" value="<%=obj.getCodigo()%>" /><br />
+            <label>Nome:</label>
+            <input type="text" name="txtnome" value="<%=obj.getNome()%>" /><br />
+            <label>Semestre</label>
+            <input type="text" name="txtsemestre" value="<%=obj.getSemestre()%>" /><br />
+            <label>Curso</label>
+            <!--            <input type="text" name="txtcurso" /><br />-->
+            <select name="selcurso">
+                <option value="">Selecione</option>
+                <%                    // percorrer a lista
+                    String selected = "";
+                    for (Curso c : cLista) {
+                        if(c.getCodigo() == obj.getCurso().getCodigo()){
+                            selected = "selected";
+                        }
+                %>
+                <option value="<%=c.getCodigo()%>" <%=selected%> ><%=c%></option>
+                <% selected = ""; 
+                    }
+                %>
+            </select><br>
+            <label>professor</label>
+            <!--            <input type="text" name="txtprofessor" /><br />-->
+            <select name="selprofessor">
+                <option value="" >Selecione</option>
+                <%
+                    selected = "";
+                    for (Professor p : pLista) {
+                        if(p.getSiape() == obj.getProfessor().getSiape()){
+                            selected = "selected";
+                        }
+                %>
+                <option value="<%=p.getSiape()%>"   <%=selected%>  ><%=p%></option>
+                <% selected = ""; 
+                    }
+                %>
+            </select>
+            <br>
+          
+            <input type="submit" value="Atualizar" />
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+
+```
+
+```jsp
+<%@page import="model.Curso"%>
+<%@page import="model.Professor"%>
+<%@page import="model.Disciplina"%>
+<%@page import="dao.DisciplinaDAO"%>
+<%@include file="cabecalho.jsp"%>
+<%
+//txtnome é o NAME que eu coloquei no input na tela 
+//anterior
+String codigo = request.getParameter("txtcodigo");
+String nome = request.getParameter("txtnome");
+String codigocurso = request.getParameter("selcurso");//chave
+String semestre = request.getParameter("txtsemestre");
+String siapeprofessor = request.getParameter("selprofessor"); //chave
+
+DisciplinaDAO dao = new DisciplinaDAO();
+//Disciplina obj = new Disciplina();
+Disciplina obj = dao.buscaPorChavePrimaria(Integer.parseInt(codigo));
+
+// Monta as FK
+Professor objProf = new Professor();
+objProf.setSiape(siapeprofessor);
+
+Curso objCurso = new Curso();
+objCurso.setCodigo(Integer.parseInt(codigocurso));
+
+//populando o obj disciplina
+//obj.setCodigo(Integer.parseInt(codigo));
+obj.setCurso(objCurso);
+obj.setNome(nome);
+obj.setProfessor(objProf);
+obj.setSemestre(Integer.parseInt(semestre));
+
+//dao.incluir(obj); // igual ao cadastrar!
+dao.alterar(obj);
+
+
+
+%>
+
+         <h1 class="centro">Atualização de Disicplina</h1>
+            
+         <div>
+             Registro alterado com sucesso.<br />
+             <a href="disciplinas.jsp">Voltar para Listagem</a>
+         </div>
+    </body>
+</html>
+
+```
+
+
 [Voltar ao Índice](#indice)
 
 ---

@@ -63,6 +63,11 @@ public class DisciplinaDAO {
             em.close();
         }
     }
+    
+    public Disciplina buscaPorChavePrimaria(Integer chave){
+        return em.find(Disciplina.class, chave);
+    }
+
 
     public void fechaEmf() {
         Conexao.closeConexao();

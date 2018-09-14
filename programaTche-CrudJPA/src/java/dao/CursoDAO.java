@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import model.Curso;
+import model.Disciplina;
 
 /**
  *
@@ -55,7 +56,6 @@ public class CursoDAO {
             em.close();
         }
     }
-    
     public void excluir(Curso obj) throws Exception {
         
         try {
@@ -67,6 +67,10 @@ public class CursoDAO {
         } finally {
             em.close();
         }
+    }
+    
+    public Disciplina buscaPorChavePrimaria(Integer chave){
+        return em.find(Disciplina.class, chave);
     }
 
     public void fechaEmf() {
