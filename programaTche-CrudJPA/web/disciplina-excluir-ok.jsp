@@ -36,7 +36,7 @@
          <h1 class="centro">Exclusão de Alunos</h1>
             
          <div>
-             <%=msg%><br />
+             <br />
              <a href="disciplinas.jsp">Voltar para Listagem</a>
          </div>
     </body>
